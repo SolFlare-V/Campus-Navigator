@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus Navigator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --primary-light: #5AA9E6;
+            --background-color: #f4f7f6;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(45deg, #e8f0f7, #f4f7f6);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1em;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navigator-card {
+            background-color: var(--card-background);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .navigator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background-image: url('https://placehold.co/600x200/4A90E2/FFFFFF?text=Campus+Navigator&font=inter');
+            background-size: cover;
+            background-position: center;
+            height: 120px;
+        }
+
+        .card-content {
+            padding: 2em;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5em;
+        }
+
+        .tab-link {
+            padding: 1em 1.5em;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1em;
+            font-weight: 500;
+            color: #888;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .tab-link.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .tab-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        h1 {
+            font-size: 1.75em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5em;
+        }
+
+        p.subtitle {
+            text-align: center;
+            margin-bottom: 2em;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1.5em;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.25);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #results {
+            margin-top: 1.5em;
+            padding: 1.5em;
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0 8px 8px 0;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1.5em auto 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="navigator-card">
+    <div class="card-header"></div>
+    <div class="card-content">
+        <h1>🗺️ Smart Campus Navigator</h1>
+
+        <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'FindRoom')">Find a Room</button>
+            <button class="tab-link" onclick="openTab(event, 'MySchedule')">My Schedule</button>
+        </div>
+
+        <!-- Find a Room Tab -->
+        <div id="FindRoom" class="tab-content active">
+            <p class="subtitle">Enter a building and room to get directions.</p>
+            <form id="navigator-form">
+                <label for="building">Building Name:</label>
+                <input type="text" id="building" name="building" required placeholder="e.g., Technology Center">
+                <label for="room">Room Number:</label>
+                <input type="text" id="room" name="room" required placeholder="e.g., 101">
+                <button type="submit">
+                    <span>🔍</span>
+                    <span>Get Directions</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- My Schedule Tab -->
+        <div id="MySchedule" class="tab-content">
+            <p class="subtitle">Enter your ID to find your next class.</p>
+            <form id="schedule-form">
+                <label for="personId">Your Person ID:</label>
+                <input type="text" id="personId" name="personId" required placeholder="e.g., S001 for John Doe">
+                <button type="submit">
+                    <span>📅</span>
+                    <span>Find Next Class</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="loader" class="spinner" style="display:none;"></div>
+        <div id="results" style="display:none;"></div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        const tabcontent = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        const tablinks = document.getElementsByClassName("tab-link");
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+        document.getElementById('results').style.display = 'none'; // Hide results on tab switch
+    }
+
+    const resultsDiv = document.getElementById('results');
+    const loader = document.getElementById('loader');
+
+    // Handler for the Directions Form
+    document.getElementById('navigator-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const building = document.getElementById('building').value;
+        const room = document.getElementById('room').value;
+
+        resultsDiv.style.display = 'none';
+        loader.style.display = 'block';
+
+        try {
+            const response = await fetch(`/api/directions?building=${encodeURIComponent(building)}&room=${encodeURIComponent(room)}`);
+            const directions = await response.text();
+            resultsDiv.textContent = directions;
+            resultsDiv.style.display = 'block';
+        } catch (error) {
+            handleError(error);
+        } finally {
+            loader.style.display = 'none';
+        }
+    });
+
+    // Handler for the Schedule Form
+    document.getElementById('schedule-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const personId = document.getElementById('personId').value;
+
+        resultsDiv.style.display = 'none';
+        loader.style.display = 'block';
+
+        try {
+            const response = await fetch(`/api/myschedule?personId=${encodeURIComponent(personId)}`);
+            const scheduleInfo = await response.text();
+            resultsDiv.textContent = scheduleInfo;
+            resultsDiv.style.display = 'block';
+        } catch (error) {
+            handleError(error);
+        } finally {
+            loader.style.display = 'none';
+        }
+    });
+
+    function handleError(error) {
+        resultsDiv.textContent = 'An error occurred. Please check the console and try again.';
+        resultsDiv.style.display = 'block';
+        console.error('Fetch error:', error);
+    }
+</script>
+</body>
+</html>
+
